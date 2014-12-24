@@ -45,17 +45,27 @@ data Schedule = Schedule {
   scheduleElements :: [ScheduleElement]  
   } deriving(Eq, Read, Show)
 
-data ElementViolation = ElementViolation {
-  blockedAction :: ActionName,
-  missingObjects :: [ObjectName]
-  } deriving (Eq, Read, Show)
+data ActionFailure = ActionFailure {
+  nameOfFailedAction :: String,
+  missingObject :: ObjectName
+  } deriving(Eq, Read, Show)
 
-data ConstraintViolation = ConstraintViolation {
-  affectedSchedule :: ScheduleID,
-  elementViolations :: [ElementViolation]
-} deriving (Eq, Read, Show)
+data ScheduleAdvanceResult = AdvancementSuccess {resultantObjects :: [ObjectName]}
+                           | AdvancementFailure [ActionFailure]
+                           deriving(Eq, Read, Show)
 
-getConstraintViolations :: State -> [ConstraintViolation]
-getConstraintViolations state = []
-
-
+applyActions :: [ObjectName] -> [Action] -> ScheduleAdvanceResult
+applyActions existingObjects actionsToApply =
+  let isActuallyFailure =
+        not . (\actionFailure -> (missingObject actionFailure) `elem` existingObjects);
+      everythingAsFailure = [ActionFailure{
+                                nameOfFailedAction = actionName action,
+                                missingObject = object
+                                } | action <- actionsToApply, object <- (inputObjects action)];
+      inputFailures = filter isActuallyFailure everythingAsFailure in
+  if null inputFailures
+  then
+    let newObjects = (concat $ map (\action -> outputObjects action) actionsToApply) in
+    AdvancementSuccess{resultantObjects = existingObjects ++ newObjects}
+  else
+    AdvancementFailure inputFailures
