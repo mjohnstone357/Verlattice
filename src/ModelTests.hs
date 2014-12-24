@@ -75,5 +75,4 @@ main = hspec $ do
                }
             ]
 
-    -- For a given list of existing objects, apply a list of actions, where possible
-    return ()
+  -- TODO Allow multiple instance of a particular object
