@@ -8,21 +8,77 @@ data State = State {
   } deriving(Eq, Read, Show)
 
 type ObjectName = String
+type ObjectDescription = String
 
 data Object = Object {
   objectName :: ObjectName,
-  objectDescription :: String
+  objectDescription :: ObjectDescription
   } deriving(Eq, Read, Show)
 
-
 type ActionName = String
+
+data InteractionType = Produce | Use | Consume
+                     deriving(Eq, Read, Show)
 
 data Action = Action {
   actionName :: ActionName,
   actionDescription :: String,
-  inputObjects :: [ObjectName],
-  outputObjects :: [ObjectName]
+  objectInteractions :: [ObjectInteraction]
   } deriving(Eq, Read, Show)
+
+data CreateActionResult = FailedDuplicateActionName
+                        | FailedNoSuchObjects [ObjectName]
+                        | CreateActionSuccess State
+                        deriving(Eq, Read, Show)
+
+data ObjectInteraction = ObjectInteraction {
+  interactionType :: InteractionType,
+  involvedObject :: ObjectName,
+  involvedQuantity :: Int
+  } deriving(Eq, Read, Show)
+
+createAction :: State -> Action -> CreateActionResult
+createAction state action =
+  let existingActions = actions state;
+      existingActionNames = map actionName existingActions
+  in
+   if (actionName action) `elem` existingActionNames
+   then FailedDuplicateActionName
+   else
+     let objectsReferenced = map involvedObject $ objectInteractions action;
+         existingObjects = map objectName $ objects state;
+         missingObjects = filter (\object -> (not (object `elem` existingObjects))) objectsReferenced
+     in
+      if null missingObjects
+      then CreateActionSuccess state{actions = action : existingActions}
+      else FailedNoSuchObjects missingObjects
+
+data DeleteActionResult = ActionDeleted State
+                        | FailedNoSuchAction
+                        | FailedActionInUseBySchedules [ScheduleID]
+                        deriving(Eq, Read, Show)
+
+deleteAction :: State -> ActionName -> DeleteActionResult
+deleteAction state actionToDelete =
+  let oldActions = actions state;
+      newActions = filter (\a -> (actionName a) /= actionToDelete) oldActions
+  in
+   if (length newActions) == (length oldActions)
+   then
+     FailedNoSuchAction
+   else
+     let scheds = (schedules state) :: [Schedule];
+         blockingSchedules = filter (\schedule -> actionToDelete `elem`
+                                                  (map actionToExecute (scheduleElements schedule)))
+                             scheds
+         blockingSchedIDs = map scheduleID scheds
+     in
+         
+      if not $ null blockingSchedIDs
+      then
+        FailedActionInUseBySchedules blockingSchedIDs
+      else
+        ActionDeleted (state{actions =  newActions})
 
 data Date = Day Int
           deriving(Eq, Read, Show)
@@ -45,27 +101,17 @@ data Schedule = Schedule {
   scheduleElements :: [ScheduleElement]  
   } deriving(Eq, Read, Show)
 
-data ActionFailure = ActionFailure {
-  nameOfFailedAction :: String,
-  missingObject :: ObjectName
-  } deriving(Eq, Read, Show)
+data CreateObjectResult = FailedDuplicateObjectName
+                        | CreateObjectSuccess State
+                        deriving(Eq, Read, Show)
 
-data ScheduleAdvanceResult = AdvancementSuccess {resultantObjects :: [ObjectName]}
-                           | AdvancementFailure [ActionFailure]
-                           deriving(Eq, Read, Show)
-
-applyActions :: [ObjectName] -> [Action] -> ScheduleAdvanceResult
-applyActions existingObjects actionsToApply =
-  let isActuallyFailure =
-        not . (\actionFailure -> (missingObject actionFailure) `elem` existingObjects);
-      everythingAsFailure = [ActionFailure{
-                                nameOfFailedAction = actionName action,
-                                missingObject = object
-                                } | action <- actionsToApply, object <- (inputObjects action)];
-      inputFailures = filter isActuallyFailure everythingAsFailure in
-  if null inputFailures
-  then
-    let newObjects = (concat $ map (\action -> outputObjects action) actionsToApply) in
-    AdvancementSuccess{resultantObjects = existingObjects ++ newObjects}
-  else
-    AdvancementFailure inputFailures
+createObject :: State -> Object -> CreateObjectResult
+createObject state object =
+  let existingObjects = objects state;
+      existingObjectNames = map objectName existingObjects
+  in
+   if (objectName object) `elem` existingObjectNames
+   then
+     FailedDuplicateObjectName
+   else
+     CreateObjectSuccess state{objects = object : (objects state)}
