@@ -78,7 +78,7 @@ deleteAction state actionToDelete =
       then
         FailedActionInUseBySchedules blockingSchedIDs
       else
-        ActionDeleted (state{actions =  newActions})
+        ActionDeleted (state{actions = newActions})
 
 data Date = Day Int
           deriving(Eq, Read, Show)
@@ -91,7 +91,8 @@ dateRange startDate endDate =
                                               
 data ScheduleElement = ScheduleElement{
   actionToExecute :: ActionName,
-  dateOfExecution :: Date
+  dateOfExecution :: Date,
+  executionCount :: Int
   } deriving(Eq, Read, Show)
 
 type ScheduleID = Int
@@ -115,3 +116,46 @@ createObject state object =
      FailedDuplicateObjectName
    else
      CreateObjectSuccess state{objects = object : (objects state)}
+
+data CreateScheduleResult = CreateScheduleSuccess State
+                          | FailedDuplicateScheduleID
+                          deriving(Eq, Read, Show)
+
+createSchedule :: State -> Schedule -> CreateScheduleResult
+createSchedule state schedule =
+  let existingSchedules = schedules state
+  in
+   let existingScheduleIDs = map scheduleID existingSchedules
+   in
+    if (scheduleID schedule) `elem` existingScheduleIDs
+    then FailedDuplicateScheduleID
+    else CreateScheduleSuccess state{schedules = schedule : existingSchedules}
+
+data DuplicateScheduleResult = ScheduleDuplicationSuccess State
+                             | DuplicateFailedNoSuchSchedule
+                             deriving(Eq, Read, Show)
+
+duplicateSchedule :: State -> ScheduleID -> DuplicateScheduleResult
+duplicateSchedule state schedID =
+  let nextScheduleID = 1 + (maximum $ map scheduleID $ schedules state);
+      existingSchedules = schedules state;
+      targetSchedules = filter (\sched -> (scheduleID sched) == schedID) existingSchedules in
+  if null targetSchedules
+  then
+    DuplicateFailedNoSuchSchedule
+  else
+    let newSchedule = (head targetSchedules){scheduleID = nextScheduleID} in
+    ScheduleDuplicationSuccess state{schedules = newSchedule : existingSchedules}
+
+data DeleteScheduleResult = ScheduleDeletionSuccess State
+                          | DeleteScheduleFailedNoSuchSchedule
+                          deriving(Eq, Read, Show)
+
+deleteSchedule :: State -> ScheduleID -> DeleteScheduleResult
+deleteSchedule state schedID =
+  let existingSchedules = schedules state;
+      newSchedules = filter (\sched -> (scheduleID sched) /= schedID) existingSchedules
+  in
+   if length newSchedules == length existingSchedules
+   then DeleteScheduleFailedNoSuchSchedule
+   else ScheduleDeletionSuccess state{schedules = newSchedules}

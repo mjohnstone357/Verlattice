@@ -12,7 +12,7 @@ emptyState = State {objects = [], actions = [], schedules = []}
 
 emptyAction :: Action
 emptyAction = Action{actionName = "TestAction", actionDescription = "A test action",
-                               objectInteractions = []}
+                     objectInteractions = []}
 
 main :: IO ()
 main = hspec $ do
@@ -102,7 +102,8 @@ main = hspec $ do
                                   scheduleElements = [
                                     ScheduleElement{
                                        actionToExecute = actionName emptyAction,
-                                       dateOfExecution = Day 5
+                                       dateOfExecution = Day 5,
+                                       executionCount = 1
                                        }
                                     ]
                                  }
@@ -111,4 +112,65 @@ main = hspec $ do
       deleteAction state (actionName emptyAction) `shouldBe`
         FailedActionInUseBySchedules [0]
 
-                                       
+  describe "createSchedule" $ do
+
+    it "creates a new schedule as requested" $ do
+      let schedule = Schedule{
+            scheduleID = 0,
+            scheduleElements = []
+            }
+      let (CreateScheduleSuccess newState) = createSchedule emptyState schedule
+      schedules newState `shouldBe` [schedule]
+
+    it "prevents addition of multiple schedules with the same ID" $ do
+      let schedule1 = Schedule{
+            scheduleID = 0,
+            scheduleElements = []
+            };
+          schedule2 = Schedule{
+            scheduleID = 0,
+            scheduleElements = []
+            }
+      let (CreateScheduleSuccess newState) = createSchedule emptyState schedule1
+      createSchedule newState schedule2 `shouldBe` FailedDuplicateScheduleID
+
+-- TODO prevent schedule elements from pointing at non-existent actions
+      
+  describe "duplicateSchedule" $ do
+
+    it "duplicates the requested schedule, assigning a new schedule ID" $ do
+    
+      let schedule = Schedule{
+            scheduleID = 0,
+            scheduleElements = [ScheduleElement{actionToExecute = actionName emptyAction,
+                                                dateOfExecution = Day 5,
+                                                executionCount = 10
+                                               }]
+            }
+      let (CreateScheduleSuccess newState) = createSchedule emptyState schedule
+      let (ScheduleDuplicationSuccess newState2) = duplicateSchedule newState 0
+      length (schedules newState2) `shouldBe` 2
+      head (schedules newState2) `shouldBe` schedule{scheduleID = 1}
+
+
+    it "throws an error when asked to duplicate a non-existent schedule" $ do
+      duplicateSchedule emptyState 0 `shouldBe` DuplicateFailedNoSuchSchedule
+
+  describe "deleteSchedule" $ do
+
+    it "deletes the requested schedule" $ do
+      let schedule0 = Schedule{
+            scheduleID = 0,
+            scheduleElements = [ScheduleElement{actionToExecute = actionName emptyAction,
+                                                dateOfExecution = Day 5,
+                                                executionCount = 10
+                                               }]
+            }
+      let schedule1 = schedule0{scheduleID = 1}
+      let (CreateScheduleSuccess newState1) = createSchedule emptyState schedule0
+      let (CreateScheduleSuccess newState2) = createSchedule newState1 schedule1
+      let (ScheduleDeletionSuccess newState3) = deleteSchedule newState2 0
+      schedules newState3 `shouldBe` [schedule1]
+
+    it "throws an error when asked to delete a non-existent schedule" $ do
+      deleteSchedule emptyState 0 `shouldBe` DeleteScheduleFailedNoSuchSchedule
