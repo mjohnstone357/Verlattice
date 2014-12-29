@@ -34,6 +34,7 @@ data CreateActionResult = FailedDuplicateActionName
 data ObjectInteraction = ObjectInteraction {
   interactionType :: InteractionType,
   involvedObject :: ObjectName,
+  involvedDate :: RelativeDate,
   involvedQuantity :: Int
   } deriving(Eq, Read, Show)
 
@@ -82,6 +83,9 @@ deleteAction state actionToDelete =
 
 data Date = Day Int
           deriving(Eq, Read, Show)
+
+data RelativeDate = RelativeDate Int
+                  deriving(Eq, Read, Show)
 
 dateRange :: Date -> Date -> [Date]
 dateRange startDate endDate =
@@ -159,3 +163,18 @@ deleteSchedule state schedID =
    if length newSchedules == length existingSchedules
    then DeleteScheduleFailedNoSuchSchedule
    else ScheduleDeletionSuccess state{schedules = newSchedules}
+
+data ScheduleActionResult = ScheduleActionSuccess State
+
+scheduleAction :: State -> ScheduleID -> ScheduleElement -> ScheduleActionResult
+scheduleAction state schedID element =
+  let existingScheds = schedules state;
+      newScheds = map (\sched ->
+                        if (scheduleID sched) == schedID
+                        then
+                          let existingElements = scheduleElements sched
+                          in sched{scheduleElements = element : existingElements}
+                        else sched) existingScheds
+  in
+   ScheduleActionSuccess state{schedules = newScheds}
+

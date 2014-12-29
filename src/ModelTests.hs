@@ -69,9 +69,11 @@ main = hspec $ do
                             [
                               ObjectInteraction{interactionType = Use,
                                                 involvedObject = "Alice",
+                                                involvedDate = RelativeDate 3,
                                                 involvedQuantity = 1},
                               ObjectInteraction{interactionType = Use,
                                                 involvedObject = "Bob",
+                                                involvedDate = RelativeDate 3,
                                                 involvedQuantity = 1}
                             ]}
       createAction emptyState action `shouldBe` (FailedNoSuchObjects ["Alice", "Bob"])
@@ -174,3 +176,38 @@ main = hspec $ do
 
     it "throws an error when asked to delete a non-existent schedule" $ do
       deleteSchedule emptyState 0 `shouldBe` DeleteScheduleFailedNoSuchSchedule
+
+  describe "scheduleAction" $ do
+
+    it "should schedule an action for day 5" $ do
+      let gbp = Object{objectName = "GBP", objectDescription = "Great British Pounds"}
+      let action = Action{
+            actionName = "BuyCake",
+            actionDescription = "Buy a birthday cake.",
+            objectInteractions = [
+              ObjectInteraction{
+                 interactionType = Consume,
+                 involvedObject = "GBP",
+                 involvedDate = RelativeDate 0,
+                 involvedQuantity = 10
+                 }
+              ]
+            }
+      let sched = Schedule{scheduleID = 0, scheduleElements = []}
+
+      let newElement = ScheduleElement{
+            actionToExecute = "BuyCake",
+            dateOfExecution = Day 5,
+            executionCount = 1
+            }
+            
+      let (CreateObjectSuccess newState1) = createObject emptyState gbp
+      let (CreateActionSuccess newState2) = createAction newState1 action
+      let (CreateScheduleSuccess newState3) = createSchedule newState2 sched
+      let (ScheduleActionSuccess newState4) = scheduleAction newState3 0 newElement
+
+      let resultantSchedule = head $ schedules newState4
+
+      scheduleElements resultantSchedule `shouldBe` [newElement]
+
+-- TODO Coalesce schedule elements as they are added
