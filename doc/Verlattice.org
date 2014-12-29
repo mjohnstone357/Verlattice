@@ -18,7 +18,7 @@ are completed.
 
 *** Use Cases
 
-**** Data Entry [6/8]
+**** Data Entry [7/8]
 
 Functionality that supports the system's operation.
 
@@ -61,15 +61,16 @@ executed. Actions can also be applied multiple times.
       - State "IMPLEMENTED" from "TODO"       [2014-12-28 Sun 23:41]
       - State "TODO"       from ""           [2014-12-27 Sat 10:17]
 
+***** IMPLEMENTED Schedule an action against a strategy
+      - State "IMPLEMENTED" from "TODO"       [2014-12-29 Mon 22:09]
+      - State "TODO"       from ""           [2014-12-27 Sat 22:56]
+
 ***** TODO Instantiate an object in a particular schedule
      - State "TODO"       from ""           [2014-12-27 Sat 09:57]
 
 If there's an object which is known to exist at some point in time, I can instantiate it directly
 against a strategy. If I want to make an object available for a particular range of dates, I will
 have to create an action to remove the object at the appropriate date.
-
-***** TODO Schedule an action against a strategy
-      - State "TODO"       from ""           [2014-12-27 Sat 22:56]
 
 **** Value [0/4]
 
@@ -127,12 +128,27 @@ As with the /Tiered/ approach, but without the free tier. Instead, a
 ** Basic Cake Scenario
 
   - Create new schedule, schedule 0.
-  - Create objects representing GBP, cake and presents.
+  - Create objects representing GBP and cake.
   - Create actions to buy cake and to attend party.
   - Schedule party attendance action to Day 5.
   - Instantiate 100 GBP on Day 0.
   - Ask the system what conflicts exist.
   - Schedule the cake-buying action.
+
+*** Schedules
+
+  - Schedule 0 - the only schedule
+
+*** Objects
+
+  - GBP
+  - Cake
+
+*** Actions
+
+  - AttendParty
+    - Input: 1 Cake
+    - Output: None
 
 * Ideas
 
