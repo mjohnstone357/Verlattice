@@ -150,6 +150,10 @@ As with the /Tiered/ approach, but without the free tier. Instead, a
     - Input: 1 Cake
     - Output: None
 
+** ASCII Columns Output
+
+
+
 * Ideas
 
 ** Use server purchase as a model for trying out Verlattice
@@ -164,4 +168,3 @@ This is probably the obvious thing to do.
 ** Verlattice could eventually be used for publishing roadmaps
 
 *** And what about project status updates?
-

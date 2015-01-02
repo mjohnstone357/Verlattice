@@ -13,6 +13,8 @@ emptyState = State {objects = [], actions = [], schedules = []}
 emptyAction :: Action
 emptyAction = Action{actionName = "TestAction", actionDescription = "A test action",
                      objectInteractions = []}
+gbp :: Object
+gbp = Object{objectName = "GBP", objectDescription = "Great British Pounds"}
 
 main :: IO ()
 main = hspec $ do
@@ -179,8 +181,9 @@ main = hspec $ do
 
   describe "scheduleAction" $ do
 
+    -- TODO Failure cases for scheduling of actions
+    
     it "should schedule an action for day 5" $ do
-      let gbp = Object{objectName = "GBP", objectDescription = "Great British Pounds"}
       let action = Action{
             actionName = "BuyCake",
             actionDescription = "Buy a birthday cake.",
@@ -211,3 +214,10 @@ main = hspec $ do
       scheduleElements resultantSchedule `shouldBe` [newElement]
 
 -- TODO Coalesce schedule elements as they are added
+
+  describe "instantiateObject" $ do
+
+    it "should correctly instantiate an object at a particular point in time" $ do
+      -- TODO Actually do something here
+      instantiateObject emptyState 0 "GBP" (Day 1) 100 `shouldBe`
+        InstantiateObjectSuccess emptyState

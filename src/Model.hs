@@ -178,3 +178,10 @@ scheduleAction state schedID element =
   in
    ScheduleActionSuccess state{schedules = newScheds}
 
+type Count = Int
+
+data InstantiateObjectResult = InstantiateObjectSuccess State
+                             deriving(Eq, Read, Show)
+
+instantiateObject :: State -> ScheduleID -> ObjectName -> Date -> Count -> InstantiateObjectResult
+instantiateObject state schedID objName date count = InstantiateObjectSuccess state
