@@ -17,11 +17,11 @@ makeHandler f x = do
 
 data DoublingRequest = DoublingRequest Int deriving (Read, Show)
 
-doubleNumber :: DoublingRequest -> Int
-doubleNumber (DoublingRequest x) = x * 2
+doubleNumber :: Int -> Int
+doubleNumber x = x * 2
 
 
 -- Combining the Kernel and implementation...
 
-handleNumberDoubling :: DoublingRequest -> IO Int
+handleNumberDoubling :: Int -> IO Int
 handleNumberDoubling = makeHandler doubleNumber
