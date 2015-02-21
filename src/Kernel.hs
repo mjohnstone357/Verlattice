@@ -40,14 +40,6 @@ apply3 state childProcessors GetStringCount =
 
 data KernelTree = Kernel State [KernelTree]
 
-ktree :: KernelTree
-ktree =
-  Kernel State{xs = ["foo"]}
-  [
-    Kernel State{xs = ["bar"]} [],
-    Kernel State{xs = ["baz"]} []
-  ]
-
 type TreeApplicator c r = KernelTree -> c -> CommandResult r
 
 applyTree1 :: TreeApplicator NullCommand NullResponse
@@ -59,15 +51,22 @@ applyTree2 (Kernel state _) (AppendString x) = apply2 state (error "don't care w
 applyTree3 :: TreeApplicator GetStringCount StringCount
 applyTree3 (Kernel state children) GetStringCount = apply3 state (getChildrenResults3 children GetStringCount) GetStringCount
 
-getChildrenResults3 :: [KernelTree] -> GetStringCount -> [GetStringCount -> StringCount]
+type ChildrenResultFinder c r = [KernelTree] -> c -> [c -> r]
+
+getChildrenResults3 :: ChildrenResultFinder GetStringCount StringCount
 getChildrenResults3 kernelTrees GetStringCount = map (getIndividualResult3 GetStringCount) kernelTrees
 
-getIndividualResult3 :: GetStringCount -> KernelTree -> (GetStringCount -> StringCount)
+type IndividualResultFinder c r = c -> KernelTree -> (c -> r)
+
+getIndividualResult3 :: IndividualResultFinder GetStringCount StringCount
 getIndividualResult3 GetStringCount kernelTree = (\GetStringCount -> response (applyTree3 kernelTree GetStringCount))
 
--- applyTree :: KernelTree -> Command -> CommandResult
--- applyTree (Kernel state children) command =
---   apply state childProcessors command
---   where
---     childProcessors = (map (\f -> response . f) commandToResults) :: [Command -> Response]
---     commandToResults = (map (\child -> applyTree child)) children :: [Command -> CommandResult]
+-- Sample data follows
+
+ktree :: KernelTree
+ktree =
+  Kernel State{xs = ["foo"]}
+  [
+    Kernel State{xs = ["bar"]} [],
+    Kernel State{xs = ["baz"]} []
+  ]
