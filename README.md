@@ -1,4 +1,4 @@
 Verlattice
 ==========
 
-The proprietary Verlattice product
+Verlattice is a tool for planning the use of all kinds of resource.
