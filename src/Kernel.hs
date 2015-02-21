@@ -3,29 +3,25 @@ module Kernel where
 
 -- Generic kernel stuff
 
-data Kernel i o = Kernel {
-  kernelID :: String,
-  function :: i -> o
-}
+-- This simulates getting a value over the network from another instance
+makeHandler :: (Read a, Read b, Show a, Show b) => (a -> b) -> a -> IO b
+makeHandler f x = do
+  putStrLn $ "Got " ++ (show x)
+  let remoteRetVal = (f x)
+  let serialisedRetVal = show remoteRetVal
+  putStrLn $ "The remote client returned " ++ (show serialisedRetVal)
+  return $ read serialisedRetVal
 
-data KernelTree i o = KernelTree (Kernel i o) [KernelTree i o]
-  
-applyToKernel :: (Show i, Show o) => i -> Kernel i o -> o
-applyToKernel input kernel = (function kernel) input
-
---applyToKernelTree :: (Show i, Show o) => i -> KernelTree i o -> o
-
--- TODO The implementation must provide an interface where an object is passed and another is returned
 
 -- Implementation-specific stuff
 
-data MyInput = InputOne | InputTwo | InputThree
-data MyOutput = OutputOne | OutputTwo | OutputThree
+data DoublingRequest = DoublingRequest Int deriving (Read, Show)
 
-myKernel :: Kernel MyInput MyOutput
-myKernel = Kernel{kernelID = "test kernel", function = myKernelLogic}
+doubleNumber :: DoublingRequest -> Int
+doubleNumber (DoublingRequest x) = x * 2
 
-myKernelLogic :: MyInput -> MyOutput
-myKernelLogic InputOne = OutputOne
-myKernelLogic InputTwo = OutputTwo
-myKernelLogic InputThree = OutputThree
+
+-- Combining the Kernel and implementation...
+
+handleNumberDoubling :: DoublingRequest -> IO Int
+handleNumberDoubling = makeHandler doubleNumber
