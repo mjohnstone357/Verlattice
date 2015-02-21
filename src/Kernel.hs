@@ -10,26 +10,42 @@ data Kernel l s = Kernel {
 
 data KernelTree l s = KernelTree (Kernel l s) [KernelTree l s]
 
+data CommandResult s r = CommandResult {
+  resultantState :: s,
+  response :: r
+} deriving (Show)
+
+data ClientFunction i o = ClientFunction {
+  input :: i,
+  output :: o,
+  function :: i -> o
+}
+
+-- TODO The implementation must provide an interface where an object is passed and another is returned
+
 -- Implementation-specific stuff
+
+data MyInputType = NR | ASR | GSCR
+data OutputType = NResp | ASResp | GSCResp
 
 data MyKernelState = MyKernelState {
   xs :: [String]
 } deriving (Show)
 
+data NullRequest = NullRequest
+data AppendStringRequest = AppendStringRequest
+data GetStringCountRequest = GetStringCountRequest
+
 data NullResponse = NullResponse
                   deriving (Show)
-data StringCount = StringCount Int
+data AppendStringResponse = AppendStringSuccess
+data GetStringCountResponse = StringCount Int
                  deriving (Show)
 
-data CommandResult r = CommandResult {
-  resultantState :: MyKernelState,
-  response :: r
-} deriving (Show)
-
 data MyKernelLogic = MyKernelLogic {
-  pass :: MyKernelState -> CommandResult NullResponse,
-  appendString :: String -> MyKernelState -> CommandResult NullResponse,
-  getStringCount :: MyKernelState -> CommandResult StringCount
+  pass :: MyKernelState -> CommandResult MyKernelState NullResponse,
+  appendString :: String -> MyKernelState -> CommandResult MyKernelState NullResponse,
+  getStringCount :: MyKernelState -> CommandResult MyKernelState GetStringCountResponse
 }
 
 myKernelState :: MyKernelState
