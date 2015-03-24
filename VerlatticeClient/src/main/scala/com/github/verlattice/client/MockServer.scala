@@ -54,7 +54,17 @@ object MockServer {
     actions += oldAction.copy(outputs = output :: oldAction.outputs)
   }
 
+  private val plans = mutable.HashSet[Plan]()
+
+  def getPlanNames: List[String] = plans.toList.map(plan => plan.name)
+
+  def addPlan(plan: Plan): Unit = {
+    plans += plan
+  }
+
 }
+
+sealed case class Plan(name: String)
 
 sealed case class Action(name: String, inputs: List[ActionInput], outputs: List[ActionOutput])
 

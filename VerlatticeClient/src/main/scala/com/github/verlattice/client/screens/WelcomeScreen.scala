@@ -4,9 +4,6 @@ import com.github.verlattice.client.MockServer
 import com.github.verlattice.client.UIBuilder._
 import org.scalajs.dom.raw.{HTMLDivElement, HTMLParagraphElement}
 
-import scala.scalajs.js.Dynamic.{global => g}
-
-
 class WelcomeScreen(div: HTMLDivElement) extends Screen {
 
   def visit(doneCallback: () => Unit): Unit = {
@@ -25,6 +22,11 @@ class WelcomeScreen(div: HTMLDivElement) extends Screen {
       changeToScreen(new ManageActionsScreen(div), div)
     }))
     div.appendChild(btn2)
+
+    val managePlansButton: HTMLParagraphElement = paragraph(button("Manage Plans", () => {
+      changeToScreen(new ManagePlansScreen(div), div)
+    }))
+    div.appendChild(managePlansButton)
 
     val btn3: HTMLParagraphElement = paragraph(button("View Help", () => {
       changeToScreen(new HelpScreen(div), div)
