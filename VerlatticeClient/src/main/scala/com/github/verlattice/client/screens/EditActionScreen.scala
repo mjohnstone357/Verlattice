@@ -26,7 +26,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     div.appendChild(paragraph("<h3>Input Resources</h3>"))
 
     val newInputBox: HTMLInputElement = textInputBox("newInputBox", "")
-    val newInputQuantityBox: HTMLInputElement = textInputBox("newInputQuantity", "")
+    val newInputQuantityBox: HTMLInputElement = textInputBox("newInputQuantity", "1")
     val addInputButton: HTMLButtonElement = button("ADD", () => {
       val newInputName: String = newInputBox.value
       val newInputQuantity: Int = newInputQuantityBox.value.toInt
@@ -43,7 +43,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
 
     div.appendChild(paragraph("<h3>Output Resources</h3>"))
 
-    val newOutputBox: HTMLInputElement = textInputBox("newOutputBox", "")
+    val newOutputBox: HTMLInputElement = textInputBox("newOutputBox", "1")
     val newOutputQuantityBox: HTMLInputElement = textInputBox("newOutputQuantity", "")
     val addOutputButton: HTMLButtonElement = button("ADD", () => {
       val newOutputName: String = newOutputBox.value
