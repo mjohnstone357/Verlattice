@@ -36,7 +36,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     if (action.inputs.isEmpty) {
       div.appendChild(paragraph("<em>This action doesn't currently take any inputs.</em>"))
     } else {
-      div.appendChild(list(action.inputs.map(actionInput => UIBuilder.div(label(actionInput.render)))))
+      div.appendChild(list(action.inputs.map(actionInput => UIBuilder.div(paragraph(actionInput.render)))))
     }
 
     div.appendChild(paragraph("<h3>Output Resources</h3>"))
@@ -52,7 +52,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     if (action.outputs.isEmpty) {
       div.appendChild(paragraph("<em>This action doesn't currently produce any outputs.</em>"))
     } else {
-      div.appendChild(list(action.outputs.map(actionOutput => UIBuilder.div(label(actionOutput.render)))))
+      div.appendChild(list(action.outputs.map(actionOutput => UIBuilder.div(paragraph(actionOutput.render)))))
     }
 
 
