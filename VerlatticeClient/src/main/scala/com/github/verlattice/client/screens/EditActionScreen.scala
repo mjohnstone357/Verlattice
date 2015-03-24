@@ -4,28 +4,28 @@ import com.github.verlattice.client.UIBuilder._
 import com.github.verlattice.client.{Action, MockServer, UIBuilder}
 import org.scalajs.dom.raw.{HTMLParagraphElement, HTMLButtonElement, HTMLDivElement, HTMLInputElement}
 
-class EditActionScreen(div: HTMLDivElement, initialActionName: String) extends Screen {
+class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
 
   def visit(doneCallback: () => Unit): Unit = {
 
-    val titleParagraph: HTMLParagraphElement = paragraph("<h1>Edit Action - " + initialActionName + "</h1>")
+    val titleParagraph: HTMLParagraphElement = paragraph("<h1>Edit Action - " + actionName + "</h1>")
     div.appendChild(titleParagraph)
 
     div.appendChild(paragraph("Name:"))
 
-    var currentActionName = initialActionName
+    val action: Action = MockServer.getAction(actionName)
 
-    val actionNameInput: HTMLInputElement = textInputBox("actionName", initialActionName)
+    val actionNameInput: HTMLInputElement = textInputBox("actionName", actionName)
     div.appendChild(paragraph(actionNameInput, button("RENAME", () => {
-      MockServer.renameAction(currentActionName, actionNameInput.value)
-      currentActionName = actionNameInput.value
-      titleParagraph.innerHTML = "<h1>Edit Action - " + currentActionName + "</h1>"
+      MockServer.renameAction(actionName, actionNameInput.value)
+      resetToScreen(new EditActionScreen(div, actionNameInput.value), div, doneCallback)
     })))
 
-    div.appendChild(paragraph(button("UPDATE", () => {
-      MockServer.addAction(Action(actionNameInput.value, List.empty, List.empty))
-      changeToScreen(new ManageActionsScreen(div), div)
-    })))
+    div.appendChild(paragraph("<h2>Action Inputs and Outputs</h2>"))
+
+    div.appendChild(paragraph("<h3>Input Resources</h3>"))
+
+    div.appendChild(paragraph("<h3>Output Resources</h3>"))
 
     val backButton: HTMLButtonElement = UIBuilder.button("Back", doneCallback)
     div.appendChild(backButton)

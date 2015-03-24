@@ -22,6 +22,10 @@ object MockServer {
     actions += action
   }
 
+  def getAction(actionName: String): Action = {
+    actions.filter(existingAction => existingAction.name == actionName).head
+  }
+
   def updateAction(action: Action): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == action.name).head
     actions.remove(oldAction)
