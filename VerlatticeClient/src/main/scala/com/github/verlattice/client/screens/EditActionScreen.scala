@@ -26,12 +26,14 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     div.appendChild(paragraph("<h3>Input Resources</h3>"))
 
     val newInputBox: HTMLInputElement = textInputBox("newInputBox", "")
+    val newInputQuantityBox: HTMLInputElement = textInputBox("newInputQuantity", "")
     val addInputButton: HTMLButtonElement = button("ADD", () => {
       val newInputName: String = newInputBox.value
-      MockServer.addInputToAction(actionName, ActionInput(newInputName, 1))
+      val newInputQuantity: Int = newInputQuantityBox.value.toInt
+      MockServer.addInputToAction(actionName, ActionInput(newInputName, newInputQuantity))
       resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
       })
-    div.appendChild(paragraph(newInputBox, addInputButton))
+    div.appendChild(paragraph(newInputBox, label(" Quantity: "), newInputQuantityBox, addInputButton))
 
     if (action.inputs.isEmpty) {
       div.appendChild(paragraph("<em>This action doesn't currently take any inputs.</em>"))
@@ -41,13 +43,15 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
 
     div.appendChild(paragraph("<h3>Output Resources</h3>"))
 
-    val newOutputBox: HTMLInputElement = textInputBox("newInputBox", "")
+    val newOutputBox: HTMLInputElement = textInputBox("newOutputBox", "")
+    val newOutputQuantityBox: HTMLInputElement = textInputBox("newOutputQuantity", "")
     val addOutputButton: HTMLButtonElement = button("ADD", () => {
       val newOutputName: String = newOutputBox.value
-      MockServer.addOutputToAction(actionName, ActionOutput(newOutputName, 1))
+      val newOutputQuantity: Int = newOutputQuantityBox.value.toInt
+      MockServer.addOutputToAction(actionName, ActionOutput(newOutputName, newOutputQuantity))
       resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
     })
-    div.appendChild(paragraph(newOutputBox, addOutputButton))
+    div.appendChild(paragraph(newOutputBox, label(" Quantity: "), newOutputQuantityBox, addOutputButton))
 
     if (action.outputs.isEmpty) {
       div.appendChild(paragraph("<em>This action doesn't currently produce any outputs.</em>"))
