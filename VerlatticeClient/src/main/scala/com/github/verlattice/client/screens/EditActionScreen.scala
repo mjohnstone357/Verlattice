@@ -1,8 +1,8 @@
 package com.github.verlattice.client.screens
 
 import com.github.verlattice.client.UIBuilder._
-import com.github.verlattice.client.{Action, MockServer, UIBuilder}
-import org.scalajs.dom.raw.{HTMLParagraphElement, HTMLButtonElement, HTMLDivElement, HTMLInputElement}
+import com.github.verlattice.client.{ActionInput, Action, MockServer, UIBuilder}
+import org.scalajs.dom.raw._
 
 class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
 
@@ -24,8 +24,19 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     div.appendChild(paragraph("<h2>Action Inputs and Outputs</h2>"))
 
     div.appendChild(paragraph("<h3>Input Resources</h3>"))
+    if (action.inputs.isEmpty) {
+      div.appendChild(paragraph("<em>This action doesn't currently take any inputs.</em>"))
+    } else {
+      div.appendChild(list(action.inputs.map(actionInput => UIBuilder.div(label(actionInput.render)))))
+    }
 
     div.appendChild(paragraph("<h3>Output Resources</h3>"))
+    if (action.outputs.isEmpty) {
+      div.appendChild(paragraph("<em>This action doesn't currently produce any outputs.</em>"))
+    } else {
+      div.appendChild(list(action.outputs.map(actionOutput => UIBuilder.div(label(actionOutput.render)))))
+    }
+
 
     val backButton: HTMLButtonElement = UIBuilder.button("Back", doneCallback)
     div.appendChild(backButton)

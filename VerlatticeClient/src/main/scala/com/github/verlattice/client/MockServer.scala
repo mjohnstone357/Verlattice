@@ -42,5 +42,11 @@ object MockServer {
 
 sealed case class Action(name: String, inputs: List[ActionInput], outputs: List[ActionOutput])
 
-sealed case class ActionInput(resourceType: String, quantity: Int)
-sealed case class ActionOutput(resourceType: String, quantity: Int)
+sealed case class ActionInput(resourceType: String, quantity: Int) {
+  def render: String = resourceType + " x " + quantity
+}
+
+
+sealed case class ActionOutput(resourceType: String, quantity: Int) {
+  def render: String = resourceType + " x " + quantity
+}

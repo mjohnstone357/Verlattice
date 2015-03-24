@@ -46,6 +46,14 @@ object UIBuilder {
     list
   }
 
+  def list(listElements: List[HTMLDivElement]): HTMLUListElement = {
+    val list: HTMLUListElement = document.createElement("ul").asInstanceOf[HTMLUListElement]
+    for (listElement <- listElements) {
+      list.appendChild(listElement)
+    }
+    list
+  }
+
   def paragraph(childElements: HTMLElement*): HTMLParagraphElement = {
     val parNode = document.createElement("p").asInstanceOf[HTMLParagraphElement]
     for (childElement <- childElements) {
