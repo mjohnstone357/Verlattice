@@ -38,15 +38,27 @@ object MockServer {
     actions += oldAction.copy(name = newName)
   }
 
+  def addInputToAction(actionName: String, input: ActionInput): Unit = {
+    val oldAction = actions.filter(existingAction => existingAction.name == actionName).head
+    actions.remove(oldAction)
+    actions += oldAction.copy(inputs = input :: oldAction.inputs)
+  }
+
+  def addOutputToAction(actionName: String, output: ActionOutput): Unit = {
+    val oldAction = actions.filter(existingAction => existingAction.name == actionName).head
+    actions.remove(oldAction)
+    actions += oldAction.copy(outputs = output :: oldAction.outputs)
+  }
+
 }
 
 sealed case class Action(name: String, inputs: List[ActionInput], outputs: List[ActionOutput])
 
 sealed case class ActionInput(resourceType: String, quantity: Int) {
-  def render: String = resourceType + " x " + quantity
+  def render: String = resourceType + " <em>x " + quantity + "</em>"
 }
 
 
 sealed case class ActionOutput(resourceType: String, quantity: Int) {
-  def render: String = resourceType + " x " + quantity
+  def render: String = resourceType + " <em>x " + quantity + "</em>"
 }
