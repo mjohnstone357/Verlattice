@@ -26,6 +26,10 @@ object MockServer {
     actions.filter(existingAction => existingAction.name == actionName).head
   }
 
+  def actionExists(actionName: String): Boolean = {
+    resourceTypeNames.contains(actionName)
+  }
+
   def updateAction(action: Action): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == action.name).head
     actions.remove(oldAction)
