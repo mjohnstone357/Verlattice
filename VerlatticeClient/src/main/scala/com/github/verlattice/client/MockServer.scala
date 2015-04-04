@@ -77,6 +77,66 @@ object MockServer {
     updatePlan(planName, newPlan)
   }
 
+  def getState(planName: String, time: Long): Option[PlanState] = {
+    val plan: Plan = getPlan(planName)
+    val precedingElements: List[ScheduleElement] = plan.scheduleElements.filter(element => element.time <= time)
+    var currentState = List[ActionOutput]()
+    for (element <- precedingElements) {
+      val maybeState: Option[List[ActionOutput]] = applyStuff(currentState, element)
+      maybeState match {
+        case Some(state) => currentState = state
+        case None => return None
+      }
+    }
+    Some(PlanState(time, currentState))
+  }
+
+  private def applyStuff(state: List[ActionOutput], scheduleElement: ScheduleElement): Option[List[ActionOutput]] = {
+    val action: Action = getAction(scheduleElement.actionToPerform)
+    val afterInputsSubtracted: Option[List[ActionOutput]] = stateSubtract(state, action.inputs)
+    afterInputsSubtracted match {
+      case None => None
+      case Some(resultantState) =>
+        Some(stateAdd(resultantState, action.outputs))
+    }
+  }
+
+  private def stateAdd(baseState: List[ActionOutput], stateToAdd: List[ActionOutput]): List[ActionOutput] = {
+    var currentState: List[ActionOutput] = baseState
+    for (output <- stateToAdd) {
+      val resourcesOfType = currentState.filter(actionOutput => actionOutput.resourceType == output.resourceType)
+      if (resourcesOfType.isEmpty) {
+        // No need to remove/coalesce anything
+        currentState = output :: currentState
+      } else {
+        val existingResource: ActionOutput = resourcesOfType.head
+        val newResource = ActionOutput(resourceType = output.resourceType, quantity = output.quantity + existingResource.quantity)
+        currentState = newResource :: currentState.filter(actionOutput => actionOutput.resourceType != output.resourceType)
+      }
+    }
+    currentState
+  }
+
+  private def stateSubtract(baseState: List[ActionOutput], stateToSubtract: List[ActionInput]): Option[List[ActionOutput]] = {
+    var currentState: List[ActionOutput] = baseState
+    for (input <- stateToSubtract) {
+      val resourcesOfType = currentState.filter(actionOutput => actionOutput.resourceType == input.resourceType)
+      if (resourcesOfType.isEmpty) {
+        // Can't subtract this!
+        return None
+      } else {
+        // There is an applicable resource
+        val existingResource: ActionOutput = resourcesOfType.head
+        if (existingResource.quantity > input.quantity) {
+          // We still have a resource at the end
+          val newResource = ActionOutput(resourceType = input.resourceType, quantity = existingResource.quantity - input.quantity)
+          currentState = newResource :: currentState.filter(actionOutput => actionOutput.resourceType != input.resourceType)
+        }
+      }
+    }
+    Some(currentState)
+  }
+
 }
 
 sealed case class Plan(name: String, scheduleElements: List[ScheduleElement])
@@ -92,3 +152,5 @@ sealed case class ActionInput(resourceType: String, quantity: Int) {
 sealed case class ActionOutput(resourceType: String, quantity: Int) {
   def render: String = resourceType + " <em>x" + quantity + "</em>"
 }
+
+sealed case class PlanState(time: Long, outputs: List[ActionOutput])
