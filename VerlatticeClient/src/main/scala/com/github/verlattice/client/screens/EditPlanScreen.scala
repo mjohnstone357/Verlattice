@@ -1,5 +1,7 @@
 package com.github.verlattice.client.screens
 
+import java.util.Date
+
 import com.github.verlattice.client.UIBuilder._
 import com.github.verlattice.client._
 import org.scalajs.dom.raw._
@@ -15,12 +17,19 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
     val titleParagraph: HTMLParagraphElement = paragraph("<h1>Edit Plan - " + planName + "</h1>")
     div.appendChild(titleParagraph)
 
+    val addAlphaToBravoButton: HTMLButtonElement = UIBuilder.button("Add example action", () => {
+      val newPlan: Plan = plan.copy(scheduleElements = ScheduleElement(new Date().getTime, "alphaToBravo") :: plan.scheduleElements)
+      MockServer.updatePlan(planName, newPlan)
+      resetToScreen(new EditPlanScreen(div, planName), div, () => {})
+    })
+    div.appendChild(paragraph(addAlphaToBravoButton))
+
     if (plan.scheduleElements.isEmpty) {
       div.appendChild(paragraph("<em>This plan is currently empty.</em>"))
     } else {
       val listItems: List[HTMLDivElement] = plan.scheduleElements.map(scheduleElement =>
         UIBuilder.div(
-          makeLabel("At time " + scheduleElement.time + " do: " + scheduleElement.actionToPerform),
+          makeLabel(scheduleElement.actionToPerform + " @ " + new Date(scheduleElement.time)),
           button("Edit...", () => {
             resetToScreen(new EditActionScreen(div, scheduleElement.actionToPerform), div, () => {
               this.visit(doneCallback)

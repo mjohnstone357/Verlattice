@@ -66,6 +66,12 @@ object MockServer {
     plans += plan
   }
 
+  def updatePlan(oldPlanName: String, plan: Plan): Unit = {
+    val oldPlan = plans.filter(p => p.name == oldPlanName).head
+    plans -= oldPlan
+    plans += plan
+  }
+
 }
 
 sealed case class Plan(name: String, scheduleElements: List[ScheduleElement])
