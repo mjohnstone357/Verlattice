@@ -26,7 +26,7 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
       val date: js.Date = new js.Date(dateInputBox.value)
       val newPlan: Plan = plan.copy(scheduleElements = ScheduleElement(date.getTime().toLong, actionNameInput.value) :: plan.scheduleElements)
       MockServer.updatePlan(planName, newPlan)
-      resetToScreen(new EditPlanScreen(div, planName), div, () => {})
+      resetToScreen(new EditPlanScreen(div, planName), div, doneCallback)
     })
     div.appendChild(paragraph(label("Execute action "), actionNameInput, label(" on "), dateInputBox, addElementButton))
 
