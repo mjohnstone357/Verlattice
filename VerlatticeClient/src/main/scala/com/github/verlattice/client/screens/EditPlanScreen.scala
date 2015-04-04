@@ -1,6 +1,6 @@
 package com.github.verlattice.client.screens
 
-import java.util.Date
+import java.util.{TimeZone, GregorianCalendar, Date}
 
 import com.github.verlattice.client.UIBuilder._
 import com.github.verlattice.client._
@@ -35,7 +35,7 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
     } else {
       val listItems: List[HTMLDivElement] = plan.scheduleElements.sortWith((elem1, elem2) => elem1.time < elem2.time).map(scheduleElement =>
         UIBuilder.div(
-          makeLabel(scheduleElement.actionToPerform + " @ " + new Date(scheduleElement.time)),
+          makeLabel(scheduleElement.actionToPerform + " @ " + new js.Date(scheduleElement.time).toDateString()),
           button("Edit...", () => {
             resetToScreen(new EditActionScreen(div, scheduleElement.actionToPerform), div, () => {
               this.visit(doneCallback)
