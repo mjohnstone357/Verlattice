@@ -16,7 +16,7 @@ class ManagePlansScreen(div: HTMLDivElement) extends Screen {
     val newPlanInput: HTMLInputElement = textInputBox("newPlanName", "")
     val createButton: HTMLButtonElement = button("CREATE", () => {
       val newPlanName: String = newPlanInput.value
-      MockServer.addPlan(Plan(newPlanName))
+      MockServer.addPlan(Plan(newPlanName, List.empty))
       resetToScreen(new EditPlanScreen(div, newPlanName), div, () => {
         this.visit(doneCallback)
       })

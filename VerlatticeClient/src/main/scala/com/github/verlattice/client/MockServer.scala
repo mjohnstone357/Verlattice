@@ -58,13 +58,19 @@ object MockServer {
 
   def getPlanNames: List[String] = plans.toList.map(plan => plan.name)
 
+  def getPlan(planName: String): Plan = {
+    plans.filter(_.name == planName).head
+  }
+
   def addPlan(plan: Plan): Unit = {
     plans += plan
   }
 
 }
 
-sealed case class Plan(name: String)
+sealed case class Plan(name: String, scheduleElements: List[ScheduleElement])
+
+sealed case class ScheduleElement(time: Long, actionToPerform: String)
 
 sealed case class Action(name: String, inputs: List[ActionInput], outputs: List[ActionOutput])
 
