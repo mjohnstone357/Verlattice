@@ -89,7 +89,6 @@ sealed case class ActionInput(resourceType: String, quantity: Int) {
   def render: String = resourceType + " <em>x" + quantity + "</em>"
 }
 
-
 sealed case class ActionOutput(resourceType: String, quantity: Int) {
   def render: String = resourceType + " <em>x" + quantity + "</em>"
 }
