@@ -7,14 +7,14 @@ object MockServer {
   def getVersion: String = "0.0.1"
 
   private val resourceTypeNames = mutable.HashSet[String]()
+  private val actions = mutable.HashSet[Action]()
+  private val plans = mutable.HashSet[Plan]()
 
   def getResourceTypeNames: List[String] = resourceTypeNames.toList.sorted
 
   def addResourceTypeName(resourceTypeName: String): Unit = {
     resourceTypeNames += resourceTypeName
   }
-
-  private val actions = mutable.HashSet[Action]()
 
   def getActionNames: List[String] = actions.map(action => action.name).toList.sorted
 
@@ -53,8 +53,6 @@ object MockServer {
     actions.remove(oldAction)
     actions += oldAction.copy(outputs = output :: oldAction.outputs)
   }
-
-  private val plans = mutable.HashSet[Plan]()
 
   def getPlanNames: List[String] = plans.toList.map(plan => plan.name)
 
