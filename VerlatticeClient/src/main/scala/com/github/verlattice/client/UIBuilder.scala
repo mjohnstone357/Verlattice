@@ -81,6 +81,12 @@ object UIBuilder {
     input
   }
 
+  def dateInputBox(): HTMLInputElement = {
+    val input: HTMLInputElement = document.createElement("input").asInstanceOf[HTMLInputElement]
+    input.setAttribute("type", "date")
+    input
+  }
+
   def removeAllChildren(element: HTMLElement) = {
     while (element.firstChild != null) {
       element.removeChild(element.firstChild)
