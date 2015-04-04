@@ -1,6 +1,5 @@
 package com.github.verlattice.client.screens
 
-import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.github.verlattice.client.UIBuilder._
