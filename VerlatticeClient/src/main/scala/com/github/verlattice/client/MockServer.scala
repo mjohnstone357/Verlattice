@@ -72,6 +72,13 @@ object MockServer {
     plans += plan
   }
 
+  def removeElementFromPlan(planName: String, elementTime: Long): Unit = {
+    val plan: Plan = getPlan(planName)
+    val remainingElements: List[ScheduleElement] = plan.scheduleElements.filter(element => element.time != elementTime)
+    val newPlan = plan.copy(scheduleElements = remainingElements)
+    updatePlan(planName, newPlan)
+  }
+
 }
 
 sealed case class Plan(name: String, scheduleElements: List[ScheduleElement])
