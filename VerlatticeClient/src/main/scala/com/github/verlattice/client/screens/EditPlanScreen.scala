@@ -36,7 +36,7 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
       val listItems: List[HTMLDivElement] = plan.scheduleElements.sortWith((elem1, elem2) => elem1.time < elem2.time).map(scheduleElement =>
         UIBuilder.div(
           makeLabel(scheduleElement.actionToPerform + " @ " + new js.Date(scheduleElement.time).toDateString()),
-          makeLabel("...resourceSet=" + MockServer.getState(planName, scheduleElement.time) + "..."),
+          makeStateLabel(scheduleElement),
           button("Remove", () => {
             MockServer.removeElementFromPlan(plan.name, scheduleElement.time)
             resetToScreen(new EditPlanScreen(div, planName), div, () => {
@@ -55,6 +55,14 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
     })
     div.appendChild(homeButton)
 
+  }
+
+  def makeStateLabel(scheduleElement: ScheduleElement): HTMLLabelElement = {
+    val state: Option[PlanState] = MockServer.getState(planName, scheduleElement.time)
+    state match {
+      case None => makeLabel("A required resource is not available!")
+      case (Some(planState)) => makeLabel(state.toString)
+    }
   }
 
   def makeLabel(actionName: String): HTMLLabelElement = {

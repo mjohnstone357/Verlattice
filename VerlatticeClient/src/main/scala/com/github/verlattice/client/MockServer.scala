@@ -1,6 +1,8 @@
 package com.github.verlattice.client
 
 import scala.collection.mutable
+import scala.scalajs.js.Dynamic.{global => g}
+
 
 object MockServer {
 
@@ -118,11 +120,13 @@ object MockServer {
   }
 
   private def stateSubtract(baseState: List[ActionOutput], stateToSubtract: List[ActionInput]): Option[List[ActionOutput]] = {
+    // TODO This isn't working correctly
     var currentState: List[ActionOutput] = baseState
     for (input <- stateToSubtract) {
       val resourcesOfType = currentState.filter(actionOutput => actionOutput.resourceType == input.resourceType)
       if (resourcesOfType.isEmpty) {
         // Can't subtract this!
+        g.console.info("We're missing the resource: " + input.resourceType)
         return None
       } else {
         // There is an applicable resource
