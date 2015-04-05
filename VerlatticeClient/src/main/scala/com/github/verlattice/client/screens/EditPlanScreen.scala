@@ -1,7 +1,5 @@
 package com.github.verlattice.client.screens
 
-import java.util.{TimeZone, GregorianCalendar, Date}
-
 import com.github.verlattice.client.UIBuilder._
 import com.github.verlattice.client._
 import org.scalajs.dom.raw._
@@ -33,10 +31,17 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
     if (plan.scheduleElements.isEmpty) {
       div.appendChild(paragraph("<em>This plan is currently empty.</em>"))
     } else {
+      val states: Map[Long, Either[MissingResource, List[ActionOutput]]] = MockServer.computeStates(plan)
       val listItems: List[HTMLDivElement] = plan.scheduleElements.sortWith((elem1, elem2) => elem1.time < elem2.time).map(scheduleElement =>
         UIBuilder.div(
           makeLabel(scheduleElement.actionToPerform + " @ " + new js.Date(scheduleElement.time).toDateString()),
-          makeStateLabel(scheduleElement),
+          states(scheduleElement.time) match {
+            case Left(missingResource: MissingResource) =>
+              makeLabel("Missing resource. Could not perform action " + missingResource.requestedActionName + " on " +
+                new js.Date(missingResource.time).toDateString() + " because we don't have enough " + missingResource.resourceName + ".")
+            case Right(resultantState: List[ActionOutput]) =>
+              makeLabel("OK")
+          },
           button("Remove", () => {
             MockServer.removeElementFromPlan(plan.name, scheduleElement.time)
             resetToScreen(new EditPlanScreen(div, planName), div, () => {
@@ -55,14 +60,6 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
     })
     div.appendChild(homeButton)
 
-  }
-
-  def makeStateLabel(scheduleElement: ScheduleElement): HTMLLabelElement = {
-    val state: Option[PlanState] = MockServer.getState(planName, scheduleElement.time)
-    state match {
-      case None => makeLabel("A required resource is not available!")
-      case (Some(planState)) => makeLabel(state.toString)
-    }
   }
 
   def makeLabel(actionName: String): HTMLLabelElement = {
