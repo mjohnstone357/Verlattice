@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 object MockServer {
 
-  def getVersion: String = "0.0.2"
+  def getVersion: String = "0.0.3"
 
   private val resourceTypeNames = mutable.HashSet[String]()
   private val actions = mutable.HashSet[Action]()
@@ -79,6 +79,10 @@ object MockServer {
 
   def computeStates(plan: Plan): Map[Long, Either[MissingResource, List[ActionOutput]]] = {
     new StateComputer(plan, actions.toSet).computeStates()
+  }
+
+  def planHasIssues(planName: String): Boolean = {
+    computeStates(getPlan(planName)).map(_._2).filter(_.isLeft).nonEmpty // At least one error
   }
 }
 

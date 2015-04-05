@@ -38,6 +38,7 @@ class ManagePlansScreen(div: HTMLDivElement) extends Screen {
       val listItems: List[HTMLDivElement] = planNames.map(planName =>
         UIBuilder.div(
           makeLabel(planName),
+          if (MockServer.planHasIssues(planName)) makeLabel("[Plan has issues]") else makeLabel("[Plan is OK]"),
           button("Edit...", () => {
             resetToScreen(new EditPlanScreen(div, planName), div, () => {
               this.visit(doneCallback)
