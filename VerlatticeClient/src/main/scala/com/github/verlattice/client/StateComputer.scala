@@ -9,7 +9,7 @@ class StateComputer(plan: Plan, actions: Set[Action]) {
     val pairs = mutable.MutableList[(Long, Either[MissingResource, List[ActionOutput]])]()
     var lastPair: (Long, Either[MissingResource, List[ActionOutput]]) = (0, Right(List[ActionOutput]()))
 
-    for (element <- plan.scheduleElements) {
+    for (element <- plan.scheduleElements.sortBy(element => element.time)) {
       val action = actions.filter(a => a.name == element.actionToPerform).head
       lastPair._2 match {
         case Left(missingResource: MissingResource) => pairs += lastPair.copy(_1 = element.time) // We just keep repeating the error

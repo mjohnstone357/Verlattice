@@ -32,6 +32,7 @@ class EditPlanScreen(div: HTMLDivElement, planName: String) extends Screen {
       div.appendChild(paragraph("<em>This plan is currently empty.</em>"))
     } else {
       val states: Map[Long, Either[MissingResource, List[ActionOutput]]] = MockServer.computeStates(plan)
+      g.console.warn(states.toString())
       val listItems: List[HTMLDivElement] = plan.scheduleElements.sortWith((elem1, elem2) => elem1.time < elem2.time).map(scheduleElement =>
         UIBuilder.div(
           makeLabel(scheduleElement.actionToPerform + " @ " + new js.Date(scheduleElement.time).toDateString()),

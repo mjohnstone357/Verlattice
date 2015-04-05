@@ -114,4 +114,20 @@ class StateComputerTest extends FlatSpec with Matchers {
       (2000L, Right(List()))
     ))
   }
+
+  it should "enforce ordering of schedule elements" in {
+    val plan = Plan("Test Plan", List(
+      ScheduleElement(2000L, "makeAlpha"),
+        ScheduleElement(1000L, "destroyAlpha")
+    ))
+    val computer = new StateComputer(plan, Set(
+      Action("makeAlpha", inputs = List(), outputs = List(ActionOutput("Alpha", 10))),
+      Action("destroyAlpha", inputs = List(ActionInput("Alpha", 10)), outputs = List())
+    ))
+    val states: Map[Long, Either[MissingResource, List[ActionOutput]]] = computer.computeStates()
+    states should be (Map(
+      (1000L, Left(MissingResource("destroyAlpha", "Alpha", 1000L))),
+      (2000L, Left(MissingResource("destroyAlpha", "Alpha", 1000L)))
+    ))
+  }
 }
