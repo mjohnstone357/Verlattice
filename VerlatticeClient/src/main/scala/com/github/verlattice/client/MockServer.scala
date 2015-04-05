@@ -1,8 +1,6 @@
 package com.github.verlattice.client
 
 import scala.collection.mutable
-import scala.scalajs.js.Dynamic.{global => g}
-
 
 object MockServer {
 
