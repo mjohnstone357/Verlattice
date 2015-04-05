@@ -4,7 +4,7 @@ import scala.collection.mutable
 
 object MockServer {
 
-  def getVersion: String = "0.0.1"
+  def getVersion: String = "0.0.2"
 
   private val resourceTypeNames = mutable.HashSet[String]()
   private val actions = mutable.HashSet[Action]()
