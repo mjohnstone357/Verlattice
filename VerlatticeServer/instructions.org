@@ -1,0 +1,5 @@
+
+
+* Instructions
+
+  - sudo apt-get install libghc-zlib-dev
