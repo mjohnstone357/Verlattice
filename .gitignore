@@ -9,3 +9,8 @@ cabal-dev
 .cabal-sandbox/
 cabal.sandbox.config
 cabal.config
+VerlatticeClient/.idea/workspace.xml
+VerlatticeClient/project/project/
+VerlatticeClient/project/target/
+VerlatticeClient/target/
+target/
