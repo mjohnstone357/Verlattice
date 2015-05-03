@@ -21,7 +21,9 @@ Executable VerlatticeServer
     mtl                       >= 2     && < 3,
     snap-core                 >= 0.9   && < 0.10,
     snap-server               >= 0.9   && < 0.10,
-    transformers	      >= 0.4.3.0
+    transformers	      >= 0.4.3.0,
+    containers		      >=0.5.0.0,
+    json		      >=0.9.1
 
   if impl(ghc >= 6.12.0)
     ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2

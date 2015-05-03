@@ -1,10 +1,23 @@
 package com.github.verlattice.client
 
+import org.scalajs.dom.XMLHttpRequest
+import org.scalajs.dom.ext.Ajax
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.collection.mutable
+import scala.concurrent.Future
+import scala.scalajs.js
 
 object MockServer {
 
-  def getVersion: String = "0.0.3"
+  def getVersion: Future[String] = {
+    val url = "http://localhost:8000/version"
+    val eventualRequest: Future[XMLHttpRequest] = Ajax.get(url)
+    eventualRequest.map(request => {
+      val json: String = request.responseText
+      js.JSON.parse(json).version.toString
+    })
+  }
 
   private val resourceTypeNames = mutable.HashSet[String]()
   private val actions = mutable.HashSet[Action]()

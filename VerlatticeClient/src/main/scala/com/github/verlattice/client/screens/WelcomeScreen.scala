@@ -3,6 +3,9 @@ package com.github.verlattice.client.screens
 import com.github.verlattice.client.MockServer
 import com.github.verlattice.client.UIBuilder._
 import org.scalajs.dom.raw.{HTMLDivElement, HTMLParagraphElement}
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
 
 class WelcomeScreen(div: HTMLDivElement) extends Screen {
 
@@ -34,6 +37,13 @@ class WelcomeScreen(div: HTMLDivElement) extends Screen {
 
     div.appendChild(btn3)
 
-    div.appendChild(paragraph("<small>Verlattice - version " + MockServer.getVersion + "</small>"))
+    val versionParagraph = paragraph("[Retrieving version number]")
+    div.appendChild(versionParagraph)
+
+    val eventualVersion: Future[String] = MockServer.getVersion
+    eventualVersion.onSuccess{
+      case versionNumber: String =>
+        versionParagraph.innerHTML = "<small>Verlattice - version " + versionNumber + "</small>"
+    }
   }
 }
