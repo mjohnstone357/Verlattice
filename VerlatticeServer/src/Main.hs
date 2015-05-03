@@ -8,6 +8,7 @@ import           Snap.Http.Server
 import           Control.Monad.IO.Class
 import           Control.Concurrent.MVar
 import           Text.JSON
+import           Data.Set(elems)
 import qualified Data.ByteString.Char8 as BS
 
 import Verlattice
@@ -41,8 +42,11 @@ getVersionHandler = do
 getResourcesHandler :: MVar State -> Snap ()
 getResourcesHandler stateVar = do
   state <- liftIO $ readMVar stateVar
-  let names = resourceTypeNames state
-  writeBS $ BS.concat ["The names are: ", (BS.pack  (show names)), "\n"]
+  let names = (elems $ resourceTypeNames state) :: [String]
+  let jsNames = (map toJSString names) :: [JSString]
+  let jsNames2 = (map JSString jsNames) :: [JSValue]
+  let resourcesJSON = toJSObject [("resources", (JSArray jsNames2))]
+  writeBS $ BS.concat [(BS.pack  (encode resourcesJSON)), "\n"]
 
 createResourceHandler :: MVar State -> Snap ()
 createResourceHandler stateVar = do

@@ -37,7 +37,7 @@ data ActionOutput = ActionOutput {
 
 emptyState :: State
 emptyState = State{
-  resourceTypeNames = Set.fromList [],
+  resourceTypeNames = Set.fromList ["One", "Two", "Three"],
   actions = Set.empty
 }
 

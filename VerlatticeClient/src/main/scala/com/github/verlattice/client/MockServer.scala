@@ -7,6 +7,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic
 
 object MockServer {
 
@@ -23,7 +24,17 @@ object MockServer {
   private val actions = mutable.HashSet[Action]()
   private val plans = mutable.HashSet[Plan]()
 
-  def getResourceTypeNames: List[String] = resourceTypeNames.toList.sorted
+  def getResourceTypeNames: Future[List[String]] = {
+    val url = "http://localhost:8000/resources"
+    val eventualRequest: Future[XMLHttpRequest] = Ajax.get(url)
+    eventualRequest.map(request => {
+      val json: String = request.responseText
+      val resources: Dynamic = js.JSON.parse(json).resources
+      resources match {
+        case list: js.Array[js.Dynamic] => list.map(res => res.toString).toList
+      }
+    })
+  }
 
   def addResourceTypeName(resourceTypeName: String): Unit = {
     resourceTypeNames += resourceTypeName
