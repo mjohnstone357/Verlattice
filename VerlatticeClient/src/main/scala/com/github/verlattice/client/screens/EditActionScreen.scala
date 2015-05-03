@@ -32,7 +32,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     val newInputQuantityBox: HTMLInputElement = textInputBox("newInputQuantity", "1")
     val addInputButton: HTMLButtonElement = button("ADD", () => {
       val newInputName: String = newInputBox.value
-      val actionExistsFuture: Future[Boolean] = MockServer.actionExists(newInputName)
+      val actionExistsFuture: Future[Boolean] = MockServer.resourceExists(newInputName)
       actionExistsFuture.onSuccess{
         case actionExists =>
           if (!actionExists) {
@@ -61,7 +61,7 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     val newOutputQuantityBox: HTMLInputElement = textInputBox("newOutputQuantity", "1")
     val addOutputButton: HTMLButtonElement = button("ADD", () => {
       val newOutputName: String = newOutputBox.value
-      val actionExistsFuture: Future[Boolean] = MockServer.actionExists(newOutputName)
+      val actionExistsFuture: Future[Boolean] = MockServer.resourceExists(newOutputName)
       actionExistsFuture.onSuccess{
         case actionExists =>
           if (!actionExists) {

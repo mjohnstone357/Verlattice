@@ -41,39 +41,46 @@ object MockServer {
     Ajax.post(url)
   }
 
+  // TODO Move to server
   def getActionNames: List[String] = actions.map(action => action.name).toList.sorted
 
+  // TODO Move to server
   def addAction(action: Action): Unit = {
     actions += action
   }
 
+  // TODO Move to server
   def getAction(actionName: String): Action = {
     actions.filter(existingAction => existingAction.name == actionName).head
   }
 
-  def actionExists(actionName: String): Future[Boolean] = {
+  def resourceExists(actionName: String): Future[Boolean] = {
     val namesFuture: Future[List[String]] = getResourceTypeNames
     namesFuture.map(names => names.contains(actionName))
   }
 
+  // TODO Move to server
   def updateAction(action: Action): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == action.name).head
     actions.remove(oldAction)
     actions += action
   }
 
+  // TODO Move to server
   def renameAction(oldName: String, newName: String): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == oldName).head
     actions.remove(oldAction)
     actions += oldAction.copy(name = newName)
   }
 
+  // TODO Move to server
   def addInputToAction(actionName: String, input: ActionInput): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == actionName).head
     actions.remove(oldAction)
     actions += oldAction.copy(inputs = input :: oldAction.inputs)
   }
 
+  // TODO Move to server
   def addOutputToAction(actionName: String, output: ActionOutput): Unit = {
     val oldAction = actions.filter(existingAction => existingAction.name == actionName).head
     actions.remove(oldAction)

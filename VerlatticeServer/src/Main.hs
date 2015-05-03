@@ -12,6 +12,7 @@ import           Data.Set(elems)
 import qualified Data.ByteString.Char8 as BS
 
 import Verlattice
+import State
 
 main :: IO ()
 main = do

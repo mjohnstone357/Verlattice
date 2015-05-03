@@ -1,13 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Verlattice where
 
+import Actions
+import State
+
 import Data.Set
 import qualified Data.Set as Set
-
-data State = State {
-  resourceTypeNames :: Set String,
-  actions :: Set Action
-}
 
 data Plan = Plan {
   planName :: String,
@@ -19,27 +17,6 @@ data ScheduleElement = ScheduleElement {
   elementAction :: String -- Ideally this would have its own type.
 }
 
-data Action = Action {
-  actionName :: String,
-  inputs :: [ActionInput],
-  outputs :: [ActionOutput]
-}
-
-data ActionInput = ActionInput {
-  inputResourceName :: String,
-  inputQuantity :: Int
-}
-
-data ActionOutput = ActionOutput {
-  outputResourceName :: String,
-  outputQuantity :: Int
-}
-
-emptyState :: State
-emptyState = State{
-  resourceTypeNames = Set.empty,
-  actions = Set.empty
-}
 
 addResourceType :: State -> String -> State
 addResourceType initialState newType =
@@ -49,3 +26,19 @@ addResourceType initialState newType =
 getResourceTypes :: State -> [String]
 getResourceTypes state =
   elems $ resourceTypeNames state
+
+createAction :: State -> String -> State
+createAction state newActionName =
+  let oldActions = actions state;
+      newAction = Action{actionName = newActionName, inputs = [], outputs = []}
+  in
+   state{actions = Set.insert newAction oldActions}
+
+getActionNames :: State -> [String]
+getActionNames state = error "nyi"
+
+getAction :: State -> String -> Action
+getAction state actionName' = error "nyi"
+
+updateAction :: State -> String -> Action -> State
+updateAction state oldActionName updatedAction = error "nyi"
