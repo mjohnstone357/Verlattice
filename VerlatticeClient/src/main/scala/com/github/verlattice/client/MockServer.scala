@@ -3,6 +3,7 @@ package com.github.verlattice.client
 import org.scalajs.dom.XMLHttpRequest
 import org.scalajs.dom.ext.Ajax
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.scalajs.js.Dynamic.{global => g}
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -37,7 +38,8 @@ object MockServer {
   }
 
   def addResourceTypeName(resourceTypeName: String): Unit = {
-    resourceTypeNames += resourceTypeName
+    val url = "http://localhost:8000/resources/" + g.encodeURI(resourceTypeName)
+    Ajax.post(url)
   }
 
   def getActionNames: List[String] = actions.map(action => action.name).toList.sorted
