@@ -1,8 +1,10 @@
 package com.github.verlattice.client.screens
-
 import com.github.verlattice.client.UIBuilder._
 import com.github.verlattice.client._
 import org.scalajs.dom.raw._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.scalajs.js.Dynamic.{global => g}
 
 class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
@@ -30,13 +32,18 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     val newInputQuantityBox: HTMLInputElement = textInputBox("newInputQuantity", "1")
     val addInputButton: HTMLButtonElement = button("ADD", () => {
       val newInputName: String = newInputBox.value
-      if (!MockServer.actionExists(newInputName)) {
-        g.alert("Cannot add input: the resource type '" + newInputName + "' doesn't exist.")
-      } else {
-        val newInputQuantity: Int = newInputQuantityBox.value.toInt
-        MockServer.addInputToAction(actionName, ActionInput(newInputName, newInputQuantity))
-        resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
+      val actionExistsFuture: Future[Boolean] = MockServer.actionExists(newInputName)
+      actionExistsFuture.onSuccess{
+        case actionExists =>
+          if (!actionExists) {
+            g.alert("Cannot add input: the resource type '" + newInputName + "' doesn't exist.")
+          } else {
+            val newInputQuantity: Int = newInputQuantityBox.value.toInt
+            MockServer.addInputToAction(actionName, ActionInput(newInputName, newInputQuantity))
+            resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
+          }
       }
+
     })
     div.appendChild(paragraph(newInputBox, label(" Quantity: "), newInputQuantityBox, addInputButton))
 
@@ -54,12 +61,16 @@ class EditActionScreen(div: HTMLDivElement, actionName: String) extends Screen {
     val newOutputQuantityBox: HTMLInputElement = textInputBox("newOutputQuantity", "1")
     val addOutputButton: HTMLButtonElement = button("ADD", () => {
       val newOutputName: String = newOutputBox.value
-      if (!MockServer.actionExists(newOutputName)) {
-        g.alert("Cannot add output: the resource type '" + newOutputName + "' doesn't exist.")
-      } else {
-        val newOutputQuantity: Int = newOutputQuantityBox.value.toInt
-        MockServer.addOutputToAction(actionName, ActionOutput(newOutputName, newOutputQuantity))
-        resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
+      val actionExistsFuture: Future[Boolean] = MockServer.actionExists(newOutputName)
+      actionExistsFuture.onSuccess{
+        case actionExists =>
+          if (!actionExists) {
+            g.alert("Cannot add output: the resource type '" + newOutputName + "' doesn't exist.")
+          } else {
+            val newOutputQuantity: Int = newOutputQuantityBox.value.toInt
+            MockServer.addOutputToAction(actionName, ActionOutput(newOutputName, newOutputQuantity))
+            resetToScreen(new EditActionScreen(div, actionName), div, doneCallback)
+          }
       }
     })
     div.appendChild(paragraph(newOutputBox, label(" Quantity: "), newOutputQuantityBox, addOutputButton))

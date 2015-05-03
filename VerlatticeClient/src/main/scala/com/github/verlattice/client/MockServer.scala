@@ -2,13 +2,13 @@ package com.github.verlattice.client
 
 import org.scalajs.dom.XMLHttpRequest
 import org.scalajs.dom.ext.Ajax
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.scalajs.js.Dynamic.{global => g}
 
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic
+import scala.scalajs.js.Dynamic.{global => g}
 
 object MockServer {
 
@@ -21,7 +21,6 @@ object MockServer {
     })
   }
 
-  private val resourceTypeNames = mutable.HashSet[String]()
   private val actions = mutable.HashSet[Action]()
   private val plans = mutable.HashSet[Plan]()
 
@@ -32,7 +31,7 @@ object MockServer {
       val json: String = request.responseText
       val resources: Dynamic = js.JSON.parse(json).resources
       resources match {
-        case list: js.Array[js.Dynamic] => list.map(res => res.toString).toList
+        case list: js.Array[_] => list.map(res => res.toString).toList
       }
     })
   }
@@ -52,8 +51,9 @@ object MockServer {
     actions.filter(existingAction => existingAction.name == actionName).head
   }
 
-  def actionExists(actionName: String): Boolean = {
-    resourceTypeNames.contains(actionName)
+  def actionExists(actionName: String): Future[Boolean] = {
+    val namesFuture: Future[List[String]] = getResourceTypeNames
+    namesFuture.map(names => names.contains(actionName))
   }
 
   def updateAction(action: Action): Unit = {
