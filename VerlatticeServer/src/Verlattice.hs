@@ -4,7 +4,7 @@ module Verlattice where
 import Actions
 import State
 
-import Data.Set
+import Data.Set(elems)
 import qualified Data.Set as Set
 
 data Plan = Plan {
@@ -16,7 +16,6 @@ data ScheduleElement = ScheduleElement {
   elementTime :: Integer,
   elementAction :: String -- Ideally this would have its own type.
 }
-
 
 addResourceType :: State -> String -> State
 addResourceType initialState newType =
@@ -35,10 +34,21 @@ createAction state newActionName =
    state{actions = Set.insert newAction oldActions}
 
 getActionNames :: State -> [String]
-getActionNames state = error "nyi"
+getActionNames state =
+  let actionsSet = actions state;
+      actionsList = Set.elems actionsSet in
+  map actionName actionsList
 
 getAction :: State -> String -> Action
-getAction state actionName' = error "nyi"
+getAction state actionName' =
+  let actions' = Set.elems $ actions state;
+      matchingActions = filter (\action -> actionName action == actionName') actions' in
+  head matchingActions
 
 updateAction :: State -> String -> Action -> State
-updateAction state oldActionName updatedAction = error "nyi"
+updateAction state oldActionName updatedAction =
+  let oldAction = updatedAction{actionName = oldActionName};
+      setAfterRemoval = Set.delete oldAction (actions state);
+      setAfterAddition = Set.insert updatedAction setAfterRemoval
+  in
+   state{actions = setAfterAddition}
