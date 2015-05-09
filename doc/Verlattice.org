@@ -1,110 +1,109 @@
-#+TODO: TODO(t!) DESIGNED(d!) REWORK(r!) | IMPLEMENTED(i!)
+#+TODO: TODO(t!) DESIGNED(d!) SERVERCOMPLETE(s!) REWORK(r!) | IMPLEMENTED(i!)
 
 * Specs
 
 ** Specification for Verlattice 0.1 ('Mango')
 
-This document will be used as the basis for a usability evaluation, once all of the listed features
-are completed.
+*** Introduction
 
-*** Scope Inclusions
+The purpose of Verlattice Mango is to allow a user to manage resources with limited availability.
 
-   - Creating strategies, actions and objects
-   - Dealing with multiple instances of an object
+It should be possible to enter data on resource usage, with the system indicating when a resource
+is expected to run out.
 
-*** Scope Exclusions
+*** Data Structures
 
-   - Probabilistic stuff
+  - Resources (e.g. GBP)
+  - Actions (e.g. buy a cake)
+  - A Schedule (where actions are scheduled)
 
-*** Use Cases
+*** User Functionality
 
-**** Data Entry [7/8]
+**** Resource Types [0/4]
 
-Functionality that supports the system's operation.
+***** TODO Create a new resource type [0/1]
+      - State "TODO"       from ""           [2015-05-08 Fri 18:51]
 
-***** IMPLEMENTED Create an object class
-      - State "IMPLEMENTED" from "TODO"       [2014-12-27 Sat 18:45]
-      CLOCK: [2014-12-27 Sat 17:10]--[2014-12-27 Sat 18:45] =>  1:35
-     - State "TODO"       from ""           [2014-12-27 Sat 09:52]
+****** TODO Support decimal places
+       - State "TODO"       from ""           [2015-05-08 Fri 19:13]
 
-I'll represent all manner of things using objects.
+***** TODO Rename a resource type
+      - State "TODO"       from ""           [2015-05-08 Fri 18:54]
 
-***** IMPLEMENTED Create an action
-      - State "IMPLEMENTED" from "TODO"       [2014-12-27 Sat 20:00]
-      CLOCK: [2014-12-27 Sat 18:45]--[2014-12-27 Sat 20:00] =>  1:15
-     - State "TODO"       from ""           [2014-12-27 Sat 09:53]
+***** TODO Delete a resource type
+      - State "TODO"       from ""           [2015-05-08 Fri 18:53]
 
-The action takes as input a set of object names and counts, and produces a set of object names and
-counts. We must support use and consumption of resources and be able to specify the time at which
-each object is used/consumed/produced.
+**** Actions [0/4]
 
-***** IMPLEMENTED Delete an action
-      - State "IMPLEMENTED" from "TODO"       [2014-12-27 Sat 23:14]
-      - State "TODO"       from ""           [2014-12-27 Sat 19:59]
+***** TODO Create a new action
+      - State "TODO"       from ""           [2015-05-08 Fri 18:56]
 
-Only allow the deletion if the action isn't used by any strategy.
+***** TODO Rename an action
+      - State "TODO"       from ""           [2015-05-08 Fri 18:56]
 
-***** IMPLEMENTED Create a strategy
-      - State "IMPLEMENTED" from "TODO"       [2014-12-28 Sun 22:26]
-     - State "TODO"       from ""           [2014-12-27 Sat 09:53]
+***** TODO Delete an action
+      - State "TODO"       from ""           [2015-05-08 Fri 18:56]
 
-The strategy comprises a set of pairs of actions to execute and the date on which they will be
-executed. Actions can also be applied multiple times.
+***** Action Editing [0/2]
 
-***** IMPLEMENTED Duplicate a strategy
-      - State "IMPLEMENTED" from "TODO"       [2014-12-28 Sun 23:23]
-      - State "TODO"       from "IMPLEMENTED" [2014-12-28 Sun 23:09]
-      - State "IMPLEMENTED" from "TODO"       [2014-12-28 Sun 23:05]
-      - State "TODO"       from ""           [2014-12-27 Sat 10:13]
+****** TODO Add an input/output resource [0/2]
+       - State "TODO"       from ""           [2015-05-08 Fri 18:58]
 
-***** IMPLEMENTED Delete a strategy
-      - State "IMPLEMENTED" from "TODO"       [2014-12-28 Sun 23:41]
-      - State "TODO"       from ""           [2014-12-27 Sat 10:17]
+******* TODO Support automatic creation of resources
+	- State "TODO"       from ""           [2015-05-08 Fri 18:59]
 
-***** IMPLEMENTED Schedule an action against a strategy
-      - State "IMPLEMENTED" from "TODO"       [2014-12-29 Mon 22:09]
-      - State "TODO"       from ""           [2014-12-27 Sat 22:56]
+******* TODO Support basic edit distance matching
+	- State "TODO"       from ""           [2015-05-08 Fri 19:00]
 
-***** TODO Instantiate an object in a particular schedule
-     - State "TODO"       from ""           [2014-12-27 Sat 09:57]
+****** TODO Remove an input/output resource
+       - State "TODO"       from ""           [2015-05-08 Fri 18:59]
 
-If there's an object which is known to exist at some point in time, I can instantiate it directly
-against a strategy. If I want to make an object available for a particular range of dates, I will
-have to create an action to remove the object at the appropriate date.
+**** Plans [0/3]
+***** TODO Create a new plan
+      - State "TODO"       from ""           [2015-05-08 Fri 18:57]
 
-**** Value [0/4]
+***** TODO Rename a plan
+      - State "TODO"       from ""           [2015-05-08 Fri 19:02]
 
-Functionality that provides value to the user.
+***** Plan Editing [0/2]
 
-***** TODO Tell me which strategies have conflicts
-     - State "TODO"       from ""           [2014-12-27 Sat 09:58]
+****** TODO Schedule an action [0/3]
+       - State "TODO"       from ""           [2015-05-08 Fri 19:06]
 
-The system should indicate the name of each strategy that is in conflict, as well as the actions
-that cannot be performed and the date on which those conflicting actions were due to be executed.
+******* TODO Support repeated actions
+	- State "TODO"       from ""           [2015-05-08 Fri 19:08]
 
-***** TODO View the future actions involving a particular resource
-     - State "TODO"       from ""           [2014-12-27 Sat 10:06]
+******* TODO Support dynamic creation of new actions
+	- State "TODO"       from ""           [2015-05-08 Fri 20:14]
 
-To see what I'll be working on, and maybe some other things.
+******* TODO Support basic edit distance matching
+	- State "TODO"       from ""           [2015-05-08 Fri 20:15]
+****** TODO Remove a scheduled action
+       - State "TODO"       from ""           [2015-05-08 Fri 19:06]
 
-***** TODO Set the active strategy
-     - State "TODO"       from ""           [2014-12-27 Sat 10:07]
+***** TODO Delete a plan
+      - State "TODO"       from ""           [2015-05-08 Fri 19:18]
 
-To communicate to colleagues what we should all be working on.
+*** System Functionality
 
-***** TODO See which strategies are similar to the one I'm currently viewing
-     - State "TODO"       from ""           [2014-12-27 Sat 10:14]
+**** Plan Feedback [0/3]
 
-To allow me to get a feel for the set of available strategies.
+***** TODO Display system health on the welcome screen
+      - State "TODO"       from ""           [2015-05-08 Fri 19:20]
+
+***** TODO Display each plan's health on the Manage Plans screen
+      - State "TODO"       from ""           [2015-05-08 Fri 19:20]
+
+***** TODO Display resource conflicts on the Edit Plan screen
+      - State "TODO"       from ""           [2015-05-08 Fri 19:23]
 
 * Misc. Documents
 
 ** Market Description
 
-
 *** User Types
 
-  - Individuals for personal project management
+  - Individuals for personal money/asset management
   - Corporate users managing a business' assets
 
 *** Criteria
@@ -117,54 +116,70 @@ To allow me to get a feel for the set of available strategies.
 
   - Free for up to 3 users on one instance
   - £5/month for <=10 users
-  - £10/month for <=100 users
-  - £50/month for <= 1000 users
+  - £25/month for <=100 users
+  - £100/month for <= 1000 users
+
+I should really do some benchmarking and check cloud prices before deciding on this.
+
+Specifically, get a cheap VPS and see how many simulated users it can handle.
 
 **** Trial
 
-As with the /Tiered/ approach, but without the free tier. Instead, a
-14 day free trail will be offered.
-
-** Basic Cake Scenario
-
-  - Create new schedule, schedule 0.
-  - Create objects representing GBP and cake.
-  - Create actions to buy cake and to attend party.
-  - Schedule party attendance action to Day 5.
-  - Instantiate 100 GBP on Day 0.
-  - Ask the system what conflicts exist.
-  - Schedule the cake-buying action.
-
-*** Schedules
-
-  - Schedule 0 - the only schedule
-
-*** Objects
-
-  - GBP
-  - Cake
-
-*** Actions
-
-  - AttendParty
-    - Input: 1 Cake
-    - Output: None
+As with the /Tiered/ approach, but without the free tier. Instead, a 14 day free trail will be
+offered.
 
 ** ASCII Columns Output
 
-
-
 * Ideas
 
-** Use server purchase as a model for trying out Verlattice
+** Mimic evolution
 
-I could develop strategies involving buying servers of different capabilities and using different
-pricing strategies (dog food).
+To help ensure the eventual success of the project, I'll try to identify a useful set of
+functionality that the application could have. I'll implement that, then fine-tune it. Then, I'll
+move onto the next feature set.
 
-*** Or even the whole Verlattice project
+The idea is to have each iteration yield a viable product in its own right, even though they are
+only intermediate steps towards the final product.
 
-This is probably the obvious thing to do.
+** Secrecy
 
-** Verlattice could eventually be used for publishing roadmaps
+We could allow resources, actions and schedules to be restricted.
 
-*** And what about project status updates?
+We'd need to create restricted duplicates of the resources and actions if a schedule was
+restricted. Otherwise, other users could make changes to a restricted schedule they weren't allowed
+to access.
+
+This feature might undermine users' confidence in the system but is probably needed for a lot of
+corporate deployments.
+
+** Democratic resource utilisation
+
+People could use Verlattice to collectively decide how to use shared resources.
+
+The key question is: how can the group come to a consensus?
+
+Users could vote on which plans- or sections of plans- that the approve of.
+
+Perhaps something like AV for plan voting, i.e. users say which plans they're okay with, and their
+order of preference.
+
+*** Motivating participants
+
+How do we motivate people to contribute to plan development?
+
+We could allow them to allocate some resources to themselves as part of the plan. They wouldn't
+allocate too much, since that would reduce the probability of their plan being accepted by the
+public.
+
+So, people will try to make an improvements to the plan, and include a small reward for themselves.
+
+*But... what's to stop people from removing the reward as their only change (perhaps to spite the
+person giving themselves that reward)?*
+
+*** Stochastic approach
+
+  - The system shows users the difference between two semi-randomly selected plans.
+  - The user chooses their preferred plan.
+  - The popular elements are combined to form new plans.
+  - The process repeats many times.
+  - The system produces a /consensus plan/.
