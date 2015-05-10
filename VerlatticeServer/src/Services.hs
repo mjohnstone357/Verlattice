@@ -13,26 +13,37 @@ import Data.Map.Strict
 import qualified Data.Map.Strict as Map
 import Data.List
 
-data Request = GetActionNamesRequest
+import API
+import Model.State
 
-data Response = GetActionNamesResponse [String]
+type RequestHandler = State -> String -> StateAndResponse
 
-type RequestHandler = String -> String
+data StateAndResponse = StateAndResponse {
+  newState :: State,
+  responseJSON :: String
+}
 
 serviceHandlers :: Map String RequestHandler
 serviceHandlers = Map.fromList [
-  ("getActionNames", getActionNames)
+  ("getActionNames", processGetActionNames)
   ]
 
-resolveService :: String -> String -> String
-resolveService serviceName requestJSON =
+-- TODO The caller of this function should update the system state
+resolveService :: State -> String -> String -> StateAndResponse
+resolveService state serviceName requestJSON =
   let (Just handler) = Map.lookup serviceName serviceHandlers in
-  handler requestJSON
+  handler state requestJSON
 
-getActionNames :: String -> String
-getActionNames requestJSON =
-  let GetActionNamesRequest = parseRequest requestJSON in
-  error "nyi"
+-- We'll map a service URL to a function like this
+processGetActionNames :: RequestHandler
+processGetActionNames state requestJSON =
+  let GetActionNamesRequest = parseRequest requestJSON;
+      result = getActionNames state in
+  StateAndResponse {
+    newState = resultantState result,
+    responseJSON = show $ response result
+    }
+
 
 parseRequest :: String -> Request
 parseRequest requestJSON =

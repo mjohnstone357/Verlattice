@@ -14,6 +14,7 @@ data State = State {
   plans :: Set Plan
 }
 
+
 emptyState :: State
 emptyState = State {
   resources = Set.empty,
